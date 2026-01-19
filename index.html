@@ -2,20 +2,44 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <!-- 适配仓库路径的 favicon -->
   <link rel="icon" href="/zhengyi/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>你的项目名称</title>
-  <!-- 引入你项目的 CSS 文件（适配路径） -->
-  <link rel="stylesheet" crossorigin href="/zhengyi/assets/index-BFD9iOLP.css">
-  <!-- 保留 Vue CDN 引入（优先用你项目打包的版本，备用 CDN） -->
+  <title>Vite App</title>
+  <link rel="stylesheet" href="/zhengyi/assets/index-BFD9iOLP.css">
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 <body>
-  <!-- 项目挂载根节点（和你原来的项目一致） -->
-  <div id="app"></div>
-  
-  <!-- 引入你项目的 JS 文件（适配路径） -->
-  <script type="module" crossorigin src="/zhengyi/assets/index-DuiO9VMY.js"></script>
+  <div id="app">
+    <!-- 这里先放一个加载提示 -->
+    <div v-if="!loaded">加载中...</div>
+  </div>
+
+  <script>
+    // 先确保 Vue 加载完成
+    const { createApp } = Vue;
+
+    // 动态加载你项目的 JS 文件
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.crossOrigin = true;
+    script.src = '/zhengyi/assets/index-DuiO9VMY.js';
+    
+    script.onload = () => {
+      console.log("项目JS加载完成");
+      // 加载完成后再挂载 Vue 应用
+      createApp({
+        data() {
+          return { loaded: true }
+        }
+      }).mount('#app');
+    };
+    
+    script.onerror = (err) => {
+      console.error("项目JS加载失败", err);
+      document.getElementById('app').innerHTML = "JS加载失败，请检查路径";
+    };
+    
+    document.body.appendChild(script);
+  </script>
 </body>
 </html>
